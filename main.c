@@ -14,6 +14,11 @@ int main() {
     struct DynArr da4;
     struct DynArr da5;
 
+    // 1454.2564, 94.333333, 87941.4, 5349.15344
+    // 1454.2564, 567.765, 94.333333, 87941.4, 5349.15344
+    // 1454.2564, 567.765, 1234.5678, 94.333333, 87941.4, 5349.15344
+    // 1454.2564, 567.765, 94.333333, 87941.4, 5349.15344
+
     ar_init(da, double);
     ar_init(da2, short);
     ar_init(da3, struct A);
@@ -23,6 +28,12 @@ int main() {
     ar_pushrv(da, 1454.2564);
     ar_pushrv(da, 94.333333);
     ar_pushrv(da, 87941.4);
+    ar_pushrv(da, 5349.15344);
+
+    ar_insertrv(da, 567.765, 1);
+    ar_insertrv(da, 1234.5678, 2);
+    ar_remove(da, 5);
+    ar_remove(da, 0);
 
     ar_pushrv(da2, 4987);
     ar_pushrv(da2, 165);
@@ -52,12 +63,11 @@ int main() {
     ar_push(da4, arr); arr[4][0] = 111;
     ar_push(da4, arr); arr[8][1] = 222;
     ar_push(da4, arr); arr[2][2] = 333;
+    ar_push(da4, arr);
 
     ar_push(da5, da); ar_pushrv(da, *(double*)ar_get(da, da.len-1) + 1);
     ar_push(da5, da); ar_pushrv(da, *(double*)ar_get(da, da.len-1) + 1);
     ar_push(da5, da); ar_pushrv(da, *(double*)ar_get(da, da.len-1) + 1);
-    ar_pop(da5);
-    ar_pop(da5);
     ar_push(da5, da); ar_pushrv(da, *(double*)ar_get(da, da.len-1) + 1);
 
     for (size_t i = 0; i < da.len; i++) {
@@ -113,9 +123,11 @@ int main() {
     ar_pushrv(da8, 1); ar_pushrv(da8, 2); ar_pushrv(da8, 3);
     ar_push(da7, da8); ar_push(da6, da7); ar_pushrv(da8, 4);
     ar_push(da7, da8); ar_push(da6, da7); ar_pushrv(da8, 5);
+    ar_pop(da7);
+    ar_pop(da7);
     ar_push(da7, da8); ar_push(da6, da7);
+    ar_remove(da6, 1);
 
-    ar_pop(*(struct DynArr*)ar_get(da6, 2));
 
     for (size_t i = 0; i < da6.len; i++) {
         struct DynArr* item = ar_get(da6, i);

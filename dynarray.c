@@ -18,6 +18,7 @@ void __ar_init(struct DynArr* da, size_t stride, size_t argc, ...) {
         da->destroy = va_arg(ap, void(*)(void*));
     }
     else {
+        printf("ERROR: __ar_init received an invalid number of arguments\n");
         exit(EXIT_FAILURE);
     }
 }
@@ -35,7 +36,7 @@ void __ar_del(struct DynArr* da) {
 }
 
 void __ar_push(struct DynArr* da, void* item) {
-    if (da->len >= da->cap) {
+    if (da->len + 1 >= da->cap) {
         __ar_grow(da);
     }
     if (da->copy) {
@@ -49,21 +50,37 @@ void __ar_push(struct DynArr* da, void* item) {
 }
 
 void __ar_pop(struct DynArr* da) {
-    if (da->len < da->cap/GROWTH_FACTOR) {
-        __ar_shrink(da);
+    if (da->len > 0) {
+        if (da->len <= da->cap / GROWTH_FACTOR) {
+            __ar_shrink(da);
+        }
+        da->len--;
     }
-    da->len--;
+    else {
+        printf("ERROR: __ar_pop called on array of length 0\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 void __ar_grow(struct DynArr* da) {
     da->cap *= GROWTH_FACTOR;
     void* new_data = malloc(da->stride * da->cap);
     if (new_data) {
-        memcpy(new_data, da->data, da->stride * da->len);
+        if (da->copy) {
+            for (size_t i = 0; i < da->len; i++) {
+                void* new_item = da->copy(da->data + da->stride * i);
+                memcpy(new_data + da->stride * i, new_item, da->stride);
+                free(new_item);
+            }
+        }
+        else {
+            memcpy(new_data, da->data, da->stride * da->len);
+        }
         free(da->data);
         da->data = new_data;
     }
     else {
+        printf("ERROR: __ar_grow failed to allocate a new buffer\n");
         exit(EXIT_FAILURE);
     }
 }
@@ -76,39 +93,72 @@ void __ar_shrink(struct DynArr* da) {
             if (da->copy) {
                 for (size_t i = 0; i < da->len; i++) {
                     void* new_item = da->copy(da->data + da->stride * i);
-                    memcpy(da->data, new_item, da->stride);
+                    da->destroy(da->data + da->stride * i);
+                    memcpy(new_data, new_item, da->stride);
                     free(new_item);
                 }
+                free(da->data);
+                da->data = new_data;
             }
             else {
                 memcpy(new_data, da->data, da->stride * da->len);
             }
         }
         else {
+            printf("ERROR: __ar_shrink failed to allocate a new buffer\n");
             exit(EXIT_FAILURE);
         }
     }
     else {
+        printf("ERROR: __ar_shrink called on array of size <= 1\n");
         exit(EXIT_FAILURE);
     }
 }
 
 void* __ar_get(struct DynArr* da, size_t i) {
-    if (i >= da->len) {
+    if (i < 0 || i >= da->len) {
+        printf("ERROR: __ar_get called with invalid index\n");
         exit(EXIT_FAILURE);
     }
     return da->data + da->stride * i;
 }
 
-// todo
 void __ar_insert(struct DynArr* da, void* item, size_t i) {
-    if (da->len >= da->cap) {
+    if (da->len + 1 >= da->cap) {
         __ar_grow(da);
     }
-    if (i < da->len) {
-
+    if (i >= 0 && i < da->len) {
+        for (void* ptr = da->data + da->stride * da->len; ptr > da->data + da->stride * i; ptr -= da->stride) {
+           memcpy(ptr, ptr - da->stride, da->stride);
+        }
+        if (da->copy) {
+            void* new_item = da->copy(item);
+            memcpy(da->data + da->stride * i, new_item, da->stride);
+            free(new_item);
+        }
+        else {
+            memcpy(da->data + da->stride * i, item, da->stride);
+        }
+        da->len++;
     }
     else {
+        printf("ERROR: __ar_insert called with invalid index\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void __ar_remove(struct DynArr* da, size_t i) {
+    if (i >= 0 && i < da->len) {
+        if (da->destroy) {
+            da->destroy(da->data + da->stride * i);
+        }
+        for (void* ptr = da->data + da->stride * i; ptr + da->stride < da->data + da->stride * da->len; ptr += da->stride) {
+            memcpy(ptr, ptr + da->stride, da->stride);
+        }
+        da->len--;
+    }
+    else {
+        printf("ERROR: __ar_remove called with invalid index\n");
         exit(EXIT_FAILURE);
     }
 }

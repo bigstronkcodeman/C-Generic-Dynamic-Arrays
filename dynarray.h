@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -22,6 +23,7 @@ void __ar_grow(struct DynArr* da);
 void __ar_shrink(struct DynArr* da);
 void* __ar_get(struct DynArr* da, size_t i);
 void __ar_insert(struct DynArr* da, void* item, size_t i);
+void __ar_remove(struct DynArr* da, size_t i);
 
 void* copyda(void* da);
 void destroyda(void* da);
@@ -35,12 +37,16 @@ void destroyouterda(void* da);
 #define ar_del(da) __ar_del(&da)
 #define ar_push(da, item) __ar_push(&da, &item)
 #define ar_pop(da) __ar_pop(&da)
-#define ar_pushrv(da, rv)         \
-    do {                          \
-        __auto_type tmp = rv;     \
-        __ar_push(&da, &tmp);     \
+#define ar_pushrv(da, rv)           \
+    do {                            \
+        __auto_type tmp = rv;       \
+        __ar_push(&da, &tmp);       \
     } while(0)
 #define ar_get(da, i) __ar_get(&da, i)
 #define ar_insert(da, item, i) __ar_insert(&da, &item, i)
-
-
+#define ar_insertrv(da, rv, i)      \
+    do {                            \
+        __auto_type tmp = rv;       \
+        __ar_insert(&da, &tmp, i);  \
+    } while(0)
+#define ar_remove(da, i) __ar_remove(&da, i);
