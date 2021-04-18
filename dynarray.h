@@ -33,7 +33,7 @@ void destroyouterda(void* da);
 #define FOURTH_ARG(a1, a2, a3, a4, ...) a4
 #define NUM_ARGS(...) FOURTH_ARG(placeholder, ##__VA_ARGS__, 2, 1, 0)
 
-#define ar_init(da, type, ...) __ar_init(&da, sizeof(type), NUM_ARGS(__VA_ARGS__), ## __VA_ARGS__)
+#define ar_init(da, type, ...) __ar_init(&da, sizeof(type), NUM_ARGS(__VA_ARGS__), ## __VA_ARGS__) // cursed macro black magic
 #define ar_del(da) __ar_del(&da)
 #define ar_push(da, item) __ar_push(&da, &item)
 #define ar_pop(da) __ar_pop(&da)

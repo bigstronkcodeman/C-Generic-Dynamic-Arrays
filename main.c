@@ -8,6 +8,43 @@ struct A {
 };
 
 int main() {
+    struct DynArr da6;
+    struct DynArr da7;
+    struct DynArr da8;
+
+    ar_init(da6, struct DynArr, copyouterda, destroyouterda);
+    ar_init(da7, struct DynArr, copyda, destroyda);
+    ar_init(da8, int);
+
+    ar_pushrv(da8, 1); ar_pushrv(da8, 2); ar_pushrv(da8, 3);
+    ar_push(da7, da8); ar_push(da6, da7); ar_pushrv(da8, 4);
+    ar_push(da7, da8); ar_push(da6, da7); ar_pushrv(da8, 5);
+    ar_pop(da7);
+    ar_push(da7, da8); ar_push(da6, da7);
+    ar_remove(da6, 1);
+
+
+    for (size_t i = 0; i < da6.len; i++) {
+        struct DynArr* item = ar_get(da6, i);
+        for (size_t j = 0; j < item->len; j++) {
+            struct DynArr* innr_item = ar_get(*item, j);
+            for (size_t k = 0; k < innr_item->len; k++) {
+                int* innr_innr_item = ar_get(*innr_item, k);
+                printf("%d ", *innr_innr_item);            // I can't believe this works lmao
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+
+    for (size_t i = 0; i < da6.len; i++) {
+        struct DynArr* item = ar_get(da6, i);
+        ar_del(*item);
+    }
+    ar_del(da6);
+    ar_del(da7);
+    ar_del(da8);
+
     struct DynArr da;
     struct DynArr da2;
     struct DynArr da3;
@@ -107,42 +144,5 @@ int main() {
     ar_del(da4);
     ar_del(da5);
 
-    struct DynArr da6;
-    struct DynArr da7;
-    struct DynArr da8;
-
-    ar_init(da6, struct DynArr, copyouterda, destroyouterda);
-    ar_init(da7, struct DynArr, copyda, destroyda);
-    ar_init(da8, int);
-
-    ar_pushrv(da8, 1); ar_pushrv(da8, 2); ar_pushrv(da8, 3);
-    ar_push(da7, da8); ar_push(da6, da7); ar_pushrv(da8, 4);
-    ar_push(da7, da8); ar_push(da6, da7); ar_pushrv(da8, 5);
-    ar_pop(da7);
-    ar_pop(da7);
-    ar_push(da7, da8); ar_push(da6, da7);
-    ar_remove(da6, 1);
-
-
-    for (size_t i = 0; i < da6.len; i++) {
-        struct DynArr* item = ar_get(da6, i);
-        for (size_t j = 0; j < item->len; j++) {
-            struct DynArr* innr_item = ar_get(*item, j);
-            for (size_t k = 0; k < innr_item->len; k++) {
-                int* innr_innr_item = ar_get(*innr_item, k);
-                printf("%d ", *innr_innr_item);
-            }
-            printf("\n");
-        }
-        printf("\n");
-    }
-
-    for (size_t i = 0; i < da6.len; i++) {
-        struct DynArr* item = ar_get(da6, i);
-        ar_del(*item);
-    }
-    ar_del(da6);
-    ar_del(da7);
-    ar_del(da8);
     return 0;
 }
