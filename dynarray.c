@@ -188,7 +188,7 @@ void __ar_shrink(struct DynArr* da) {
  *
  * returns: a void pointer to the beginning of the portion of the memory block
  *          where the "i"th item resides. It is the user's responsibility to cast
- *          this pointer to the appropriate type lest they desire a slow and painful
+ *          this pointer to the appropriate type lest they desire a silent and painful
  *          death for their program.
  */
 void* __ar_get(struct DynArr* da, size_t i) {
