@@ -157,7 +157,7 @@ void __ar_shrink(struct DynArr* da) {
                 for (size_t i = 0; i < da->len; i++) {
                     void* new_item = da->copy(da->data + da->stride * i);
                     da->destroy(da->data + da->stride * i);
-                    memcpy(new_data, new_item, da->stride);
+                    memcpy(new_data + da->stride * i, new_item, da->stride);
                     free(new_item);
                 }
             }
