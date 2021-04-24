@@ -3,8 +3,7 @@
 /*
  * Function: __ar_init
  * ------------------
- * Initializes a dynamic array. The way this function is invoked is fairly cursed
- * due to some black magic that has to be performed by the preprocessor.
+ * Initializes a dynamic array.
  *
  * da: ptr to dynamic array to initialize
  * stride: the length of each element being stored by the array, in bytes
