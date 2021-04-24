@@ -315,6 +315,7 @@ void destroyouterda(void* da) {
     for (size_t i = 0; i < daptr->len; i++) {
         destroyda(daptr->data + daptr->stride * i);
     }
+    free(daptr->data);
     daptr->cap = 0;
     daptr->len = 0;
     daptr->stride = 0;
