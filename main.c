@@ -129,7 +129,7 @@ int main() {
             struct DynArr* innr_item = ar_get(*item, j);
             for (size_t k = 0; k < innr_item->len; k++) {
                 int* innr_innr_item = ar_get(*innr_item, k);
-                printf("%d ", *innr_innr_item);            // I can't believe this works lmao
+                printf("%d ", *innr_innr_item);           
             }
             printf("\n");
         }
