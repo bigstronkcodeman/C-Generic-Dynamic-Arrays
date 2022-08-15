@@ -3,7 +3,7 @@ A construct that supports dynamically resizing arrays of generic types in C. Emu
 
 My implementation of a generic dynamic array in C. Supports arbitrarily complex types via the addition of optional user-defined copy constructors and destructors. Some example usage:
 
-```
+```C
 #include <stdio.h>
 #include "dynarray.h"
  
